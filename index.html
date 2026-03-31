@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feven - 阿姆哈拉语双语商务名片</title>
+    <style>
+        /* ================= 基础全局设置 ================= */
+        :root {
+            /* 埃塞俄比亚国旗标准色 */
+            --eth-green: #078930;
+            --eth-yellow: #FCDD09;
+            --eth-red: #DA121A;
+            
+            /* 文字色彩 */
+            --text-dark: #1A1A1A;
+            --text-main: #333333;
+            --text-gray: #555555;
+            
+            /* 背景色彩 */
+            --bg-light: #F8F9FA;
+        }
+
+        body {
+            background-color: #E9ECEF;
+            font-family: 'Helvetica Neue', Helvetica, Arial, 'Microsoft YaHei', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            margin: 0;
+            gap: 50px;
+        }
+
+        /* 阿姆哈拉语字体适配优化，强制限制行高 */
+        .amharic {
+            font-family: 'Nyala', 'Kefa', 'Abyssinica SIL', sans-serif;
+            letter-spacing: 0.5px;
+            line-height: 1.15; /* 强制压缩特殊语种行高 */
+        }
+
+        /* ================= 名片通用框架 ================= */
+        .card {
+            width: 900px;
+            min-height: 540px; /* 改用 min-height，允许内容撑开容器防止截断 */
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部三色横条 */
+        .top-color-bar {
+            height: 16px;
+            width: 100%;
+            background: linear-gradient(to right, var(--eth-green) 33.33%, var(--eth-yellow) 33.33%, var(--eth-yellow) 66.66%, var(--eth-red) 66.66%);
+            flex-shrink: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        /* 底部三色横条 */
+        .bottom-color-bar {
+            height: 14px;
+            width: 100%;
+            background: linear-gradient(to right, var(--eth-green) 33.33%, var(--eth-yellow) 33.33%, var(--eth-yellow) 66.66%, var(--eth-red) 66.66%);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        /* ================= 正面样式 ================= */
+        .front-content {
+            padding: 40px 50px 30px 50px; /* 调整内边距为彩条留空 */
+            margin-top: 16px; /* 避开顶部彩条 */
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            box-sizing: border-box;
+        }
+
+        /* 姓名与头衔区 */
+        .header-section {
+            border-bottom: 3px solid var(--text-dark);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .name {
+            font-size: 52px;
+            font-weight: 900;
+            color: var(--text-dark);
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            line-height: 1.1;
+        }
+
+        .name .divider { color: var(--eth-green); font-weight: 300; }
+
+        .title-zh {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--eth-red);
+            margin: 0 0 6px 0;
+        }
+
+        .title-am {
+            font-size: 22px;
+            color: var(--text-gray);
+            margin: 0;
+            font-weight: bold;
+        }
+
+        /* 资质背书区 */
+        .credential-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* 压缩间距 */
+            margin-bottom: 20px;
+        }
+
+        .cred-item {
+            background-color: var(--bg-light);
+            border-left: 6px solid var(--eth-yellow);
+            padding: 12px 18px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .cred-item:nth-child(2) {
+            border-left-color: var(--eth-green);
+        }
+
+        .cred-zh {
+            font-size: 20px;
+            color: var(--text-main);
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .cred-am {
+            font-size: 17px;
+            color: var(--text-gray);
+        }
+
+        /* 联系方式区 */
+        .contact-section {
+            margin-top: auto; /* 自动推至底部 */
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .contact-header {
+            background-color: var(--text-dark);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .contact-header .am { font-size: 15px; margin-top: 2px; opacity: 0.9;}
+        .contact-header .zh { font-size: 18px; letter-spacing: 2px;}
+
+        .contact-details {
+            display: flex;
+            flex-wrap: wrap;
+            column-gap: 30px;
+            row-gap: 12px;
+            width: 100%;
+        }
+
+        .contact-line {
+            font-size: 20px;
+            color: var(--text-dark);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .contact-line span { color: var(--eth-green); font-size: 22px; }
+
+        /* ================= 背面样式 ================= */
+        .back-content {
+            padding: 35px 55px 45px 55px; /* 底部预留45px防止与装饰条重叠 */
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        /* 左侧细彩条作为装饰 */
+        .left-color-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 14px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--eth-green) 33.33%, var(--eth-yellow) 33.33%, var(--eth-yellow) 66.66%, var(--eth-red) 66.66%);
+            z-index: 1;
+        }
+
+        /* 核心服务大标题 */
+        .services-title-box {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            border-bottom: 2px dashed #ccc;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .services-title-zh {
+            font-size: 30px;
+            font-weight: 900;
+            color: var(--text-dark);
+            letter-spacing: 2px;
+        }
+
+        .services-title-am {
+            font-size: 24px;
+            color: var(--eth-green);
+            font-weight: bold;
+        }
+
+        /* 服务项目区 */
+        .services-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px; /* 压缩行距 */
+        }
+
+        .service-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .service-row-1 {
+            font-size: 21px;
+            font-weight: bold;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+        }
+
+        /* 不同服务应用不同主题色圆点 */
+        .service-row-1::before {
+            content: "■";
+            font-size: 18px;
+            margin-right: 10px;
+        }
+        .service-item:nth-child(1) .service-row-1::before { color: var(--eth-green); }
+        .service-item:nth-child(2) .service-row-1::before { color: var(--eth-yellow); text-shadow: 1px 1px 1px rgba(0,0,0,0.2);}
+        .service-item:nth-child(3) .service-row-1::before { color: var(--eth-red); }
+
+        .service-row-2 {
+            font-size: 18px; /* 适当减小字号，避免多行溢出 */
+            color: var(--text-gray);
+            padding-left: 28px; 
+            line-height: 1.3;
+        }
+
+        /* 底部口号区 */
+        .slogan-box {
+            background-color: var(--eth-red);
+            color: #FFFFFF;
+            text-align: center;
+            padding: 16px;
+            border-radius: 6px;
+            margin-top: auto; /* 自动推底 */
+            box-shadow: 0 6px 15px rgba(218, 18, 26, 0.25);
+        }
+
+        .slogan-zh {
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .slogan-am {
+            font-size: 22px;
+            font-weight: bold;
+            opacity: 0.95;
+        }
+
+        /* 响应式缩放 */
+        @media (max-width: 950px) {
+            .card {
+                transform: scale(0.9);
+                transform-origin: top center;
+                margin-bottom: -50px;
+            }
+        }
+        @media (max-width: 768px) {
+            .card {
+                transform: scale(0.65);
+                margin-bottom: -180px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="top-color-bar"></div>
+        <div class="front-content">
+            
+            <div class="header-section">
+                <div class="name">
+                    Feven <span class="divider">|</span> <span class="amharic">ፌቨን</span>
+                </div>
+                <div class="title-zh">阿姆哈拉语翻译 · 埃塞俄比亚咨询</div>
+                <div class="title-am amharic">አማርኛ ትርጉም · ኢትዮጵያ አማካሪ</div>
+            </div>
+
+            <div class="credential-section">
+                <div class="cred-item">
+                    <div class="cred-zh"><strong>北京外国语大学</strong> | 阿姆哈拉语专业首届毕业生</div>
+                    <div class="cred-am amharic">ቤጂንግ የውጭ ጥናት ዩኒቨርሲቲ | አማርኛቋንቋ የመጀመሪያ ተመራቂ</div>
+                </div>
+                <div class="cred-item">
+                    <div class="cred-zh"><strong>国家留基委</strong> | 国际区域问题研究高层次人才</div>
+                    <div class="cred-am amharic">የቻይና ስኮላርሺፕ ካውንስል | ዓለም አቀፍ የክልል ጉዳዮች ከፍተኛ ደረጃ ጥናት ባለሙያ</div>
+                </div>
+            </div>
+
+            <div class="contact-section">
+                <div class="contact-header">
+                    <div class="zh">联系方式</div>
+                    <div class="am amharic">የመገኛ አድራሻ</div>
+                </div>
+                <div class="contact-details">
+                    <div class="contact-line"><span>💬</span> 微信WeChat：HYY18332610985</div>
+                    <div class="contact-line"><span>📞</span> 电话ስልክ: 18332610985</div>
+                    <div class="contact-line"><span>✉️</span> 邮箱ኢሜይል: 202420228004@bfsu.edu.cn</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="left-color-bar"></div>
+        <div class="back-content">
+
+            <div class="services-title-box">
+                <div class="services-title-zh">核心服务</div>
+                <div class="services-title-am amharic">ዋና አገልግሎቶች</div>
+            </div>
+
+            <div class="services-list">
+                <div class="service-item">
+                    <div class="service-row-1">
+                        精准本地化： 阿姆哈拉语商务翻译、法律文本、语境适配
+                    </div>
+                    <div class="service-row-2 amharic">
+                        ትክክለኛ የአካባቢነት አገልግሎት: የአማርኛ ንግድ ትርጉም፣የህግ ሰነዶች፣የአውድ ማስተካከያ
+                    </div>
+                </div>
+
+                <div class="service-item">
+                    <div class="service-row-1">
+                        全媒体运营： 真人出镜视频、脚本撰写、埃塞社媒矩阵维护
+                    </div>
+                    <div class="service-row-2 amharic">
+                        የሁሉም ሚዲያ ስራዎች: የሰው ፊት ቪዲዮዎች፣ስክሪፕት መጻፍ፣ የየኢትዮጵያ ማህበራዊ ሚዲያ ማትሪክስ ጥገና
+                    </div>
+                </div>
+
+                <div class="service-item">
+                    <div class="service-row-1">
+                        市场洞察： 埃塞用户调研、商业政策分析、竞品情报收集
+                    </div>
+                    <div class="service-row-2 amharic">
+                        የገበያ ግንዛቤ: የኢትዮጵያ ተጠቃሚዎች ጥናት፣የንግድ ፖሊሲ ትንተና፣የተፎካካሪ መረጃ መሰብሰብ
+                    </div>
+                </div>
+            </div>
+
+            <div class="slogan-box">
+                <div class="slogan-zh">用阿姆哈拉语，开启埃塞俄比亚</div>
+                <div class="slogan-am amharic">ኢትዮጵያን በአማርኛ ይክፈቱ</div>
+            </div>
+
+        </div>
+        <div class="bottom-color-bar"></div>
+    </div>
+
+</body>
+</html>
